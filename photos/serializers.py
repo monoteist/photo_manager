@@ -24,3 +24,8 @@ class PhotoReadOnlySerializer(ModelSerializer):
     class Meta:
         model = Photo
         fields = ('id', 'photo')
+
+class PhotoReadOnlyRetriveSerializer(ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ('id', 'photo', 'location', 'description', 'people_names')
