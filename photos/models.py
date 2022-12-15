@@ -3,12 +3,13 @@ from django.contrib.auth.models import User
 
 class Photo(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='photos')
-    location = models.CharField('Гео локация', max_length=255)
-    description = models.TextField('Описание')
-    people_names = models.ManyToManyField('PhotoPeopleName')
+    photo = models.ImageField(upload_to='photos/')
+    location = models.CharField('Гео локация', max_length=255, blank=True, null=True)
+    description = models.TextField('Описание', blank=True, null=True)
+    people_names = models.ManyToManyField('PhotoPeopleName', blank=True)
 
     def __str__(self) -> str:
-        return self.author + self.description
+        return self.description
 
     class Meta:
         verbose_name = 'Фотография'
