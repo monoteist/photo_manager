@@ -1,21 +1,34 @@
+from django_filters import rest_framework as django_filters
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from photos.filters import PhotoFilter
 from photos.models import Photo
-from photos.serializers import PhotoCreateSerializer, PhotoReadOnlySerializer, PhotoReadOnlyRetriveSerializer
+from photos.serializers import (
+    PhotoCreateSerializer,
+    PhotoReadOnlySerializer,
+    PhotoReadOnlyRetriveSerializer,
+)
+
 
 class PhotoViewSet(ModelViewSet):
     queryset = Photo.objects.all()
     serializer_class = PhotoReadOnlySerializer
+    filter_backends = (
+        django_filters.DjangoFilterBackend,
+    )
+    filterset_class = PhotoFilter
 
     def create(self, request, *args, **kwargs):
         serializer = PhotoCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = PhotoReadOnlyRetriveSerializer(instance)
