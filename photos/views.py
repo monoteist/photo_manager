@@ -4,11 +4,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from photos.filters import PhotoFilter
-from photos.models import Photo
+from photos.models import Photo, PhotoPeopleName
 from photos.serializers import (
     PhotoCreateSerializer,
     PhotoReadOnlySerializer,
     PhotoReadOnlyRetriveSerializer,
+    PhotoPeopleNameSerializer
 )
 
 
@@ -36,3 +37,13 @@ class PhotoViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class PhotoPeopleNamesViewSet(ModelViewSet):
+    queryset = PhotoPeopleName.objects.all()
+    serializer_class = PhotoPeopleNameSerializer
+
+    def get_queryset(self):
+        name = self.request.GET.get('name', '')
+        queryset = self.queryset.filter(name__startswith=name)
+        return queryset
